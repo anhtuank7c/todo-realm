@@ -1,9 +1,9 @@
 import Realm from 'realm';
-import { NavigationActions } from 'react-navigation';
 import { LOAD, INSERT, UPDATE, DELETE, LOGIN_ERROR, LOGIN_SUCCESS } from './types';
-import { User, Todo } from '../schema';
+import { Todo } from '../schema';
 import { TODO } from '../schema/types';
 import Utils from '../Utils';
+import store from '../store';
 
 // Get the default Realm with support for our objects
 // Realm.Sync.User.logout();
@@ -35,21 +35,28 @@ export const login = ({ email, password }) => {
                 Realm.Sync.User.register('http://127.0.0.1:9080', email, password, (error, u) => {
                     if (error) {
                         dispatch({
-                            type: LOGIN_ERROR,
-                            payload: error.message
+                            type: 'login_error',
+                            payload: error.title
                         });
+                        console.log('register', error.title);
                     } else {
                         dispatch({
-                            type: LOGIN_SUCCESS,
+                            type: 'login_success',
                             payload: u
                         });
+                        console.log('register OK', u);
+                        console.log(store.getState());
+                        store.getState().nav.routes.push({ routeName: 'List' });
                     }
                 });
             } else {
                 dispatch({
-                    type: LOGIN_SUCCESS,
+                    type: 'login_success',
                     payload: user
                 });
+                console.log('login OK', user);
+                console.log(store.getState());
+                store.getState().nav.routes.push({ routeName: 'List' });
             }
         });
     };
@@ -58,7 +65,7 @@ export const login = ({ email, password }) => {
 export const loadTodo = (sortBy = SORT_BY) => {
     return {
         type: LOAD,
-        payload: realm.objects('Todo').sorted(sortBy)
+        payload: realm.objects(TODO).sorted(sortBy)
     };
     // return {
     //     type: 'LOAD',
@@ -73,15 +80,14 @@ export const loadTodo = (sortBy = SORT_BY) => {
 export const saveTodo = ({ content, completed }) => {
     const id = Utils.guid();
     return {
-        type: 'INSERT',
-        promise: realm.write(() => {
-            realm.create('Todo', {
+        type: INSERT,
+        payload: realm.write(() => {
+            realm.create(TODO, {
                 id,
                 content,
                 completed
             });
         }),
-        payload: realm.objects('Todo').filtered(`id = '${id}'`)
         // meta: {
         //     onSuccess: (result) => logSuccess(result),
         //     onFailure: (error) => logError(error),

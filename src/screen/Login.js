@@ -14,7 +14,14 @@ class Login extends Component {
         password: ''
     }
 
-    renderError = () => {
+    componentWillMount() {
+        if (this.props.user) {
+            console.log(this.props);
+            console.log(this.state);
+        }
+    }
+
+    renderError() {
         if (!this.props.error) {
             return;
         }
@@ -29,6 +36,7 @@ class Login extends Component {
                         Email
                     </Text>
                     <TextInput
+                        ref="email"
                         style={styles.input}
                         value={this.state.email}
                         onChangeText={(email) => this.setState({ email })}
@@ -38,6 +46,8 @@ class Login extends Component {
                         height={50}
                         width={250}
                         autoFocus
+                        returnKeyType="next"
+                        onSubmitEditing={() => this.refs.password.focus()}
                     />
                 </View>
                 <View style={styles.inputGroup}>
@@ -45,6 +55,7 @@ class Login extends Component {
                         Password
                     </Text>
                     <TextInput
+                        ref="password"
                         style={styles.input}
                         value={this.state.password}
                         onChangeText={(password) => this.setState({ password })}
@@ -54,6 +65,8 @@ class Login extends Component {
                         width={250}
                         height={50}
                         secureTextEntry
+                        returnKeyType="done"
+                        onSubmitEditing={() => this.props.login(this.state)}
                     />
                 </View>
                 {this.renderError()}
@@ -77,6 +90,7 @@ const styles = {
         padding: 10,
         height: 60,
         borderBottomWidth: 1,
+        borderBottomColor: '#ddd'
     },
     label: {
         fontSize: 16,

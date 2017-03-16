@@ -1,4 +1,2 @@
-export default {
-    TODO: 'Todo',
-    USER: 'User',
-};
+export const TODO = 'Todo';
+export const USER = 'User';
