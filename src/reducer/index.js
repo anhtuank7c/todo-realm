@@ -1,6 +1,10 @@
 import { combineReducers } from 'redux';
+import Auth from './Auth';
 import Todo from './Todo';
+import Navigation from './Navigation';
 
 export default combineReducers({
-    Todo
+    Todo,
+    Auth,
+    nav: Navigation
 });

@@ -8,7 +8,6 @@ const INITIAL = {
 };
 
 export default (state = INITIAL, action) => {
-    console.log('Todo Reducer', action);
     const { type, payload } = action;
     switch (type) {
         case LOAD:
