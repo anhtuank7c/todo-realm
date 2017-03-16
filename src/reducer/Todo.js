@@ -8,9 +8,25 @@ const INITIAL = {
 };
 
 export default (state = INITIAL, action) => {
+    console.log('Todo Reducer', action);
     const { type, payload } = action;
     switch (type) {
         case LOAD:
+            return handle(state, action, {
+                start: prevState => {
+                    return { ...prevState, isLoading: true, error: null, todos: [] };
+                },
+                finish: prevState => {
+                    return { ...prevState, isLoading: false };
+                },
+                failure: prevState => {
+                    return { ...prevState, isLoading: false, error: payload };
+                },
+                success: prevState => {
+                    return { ...prevState, isLoading: false, error: null, todos: payload };
+                },
+            });
+        case INSERT:
             return handle(state, action, {
                 start: prevState => {
                     return { ...prevState, isLoading: true, error: null, todos: [] };
